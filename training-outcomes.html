@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graduate training outcomes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,500;100,600;100,700;112,600;112,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#ffffff;
+    --surface:#f4f3f8;
+    --ink:#1b1236;
+    --ink-soft:#5a5273;
+    --ink-faint:#8f88a6;
+    --rule:#ded9ea;
+    --swe:#7126e0;
+    --swe-wash:#f3ecfe;
+    --ta:#0e7c86;
+    --ta-wash:#e6f4f5;
+    --pmo:#b4185f;
+    --pmo-wash:#fdeaf1;
+    --ai:#8a5300;
+    --ai-wash:#fbf1e1;
+    --node:14px;
+  }
+
+  *{box-sizing:border-box}
+
+  html{-webkit-text-size-adjust:100%}
+
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{
+    max-width:1320px;
+    margin:0 auto;
+    padding:48px 32px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:32px;
+    flex-wrap:wrap;
+    padding-bottom:20px;
+    margin-bottom:40px;
+    border-bottom:1px solid var(--rule);
+  }
+
+  h1{
+    font-family:"Archivo",sans-serif;
+    font-variation-settings:"wdth" 112,"wght" 700;
+    font-size:clamp(28px,3.4vw,42px);
+    line-height:1.05;
+    letter-spacing:-0.02em;
+    margin:0 0 10px;
+  }
+
+  .standfirst{
+    margin:0;
+    max-width:56ch;
+    color:var(--ink-soft);
+    font-size:16px;
+  }
+
+  .toggle-all{
+    font-family:inherit;
+    font-size:14px;
+    font-weight:500;
+    color:var(--ink-soft);
+    background:none;
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding:9px 16px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:border-color .15s, color .15s;
+  }
+  .toggle-all:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .toggle-all:focus-visible{outline:2px solid var(--swe);outline-offset:2px}
+
+  /* ---------- streams ---------- */
+
+  .streams{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:40px;
+    align-items:start;
+  }
+
+  .stream{--c:var(--swe);--wash:var(--swe-wash)}
+  .stream[data-stream="ta"]{--c:var(--ta);--wash:var(--ta-wash)}
+  .stream[data-stream="pmo"]{--c:var(--pmo);--wash:var(--pmo-wash)}
+
+  .stream-head{
+    border-top:5px solid var(--c);
+    padding-top:14px;
+    margin-bottom:6px;
+  }
+
+  .stream-head h2{
+    font-family:"Archivo",sans-serif;
+    font-variation-settings:"wdth" 100,"wght" 700;
+    font-size:23px;
+    line-height:1.15;
+    letter-spacing:-0.015em;
+    margin:0 0 6px;
+    color:var(--c);
+  }
+
+  .stream-meta{
+    margin:0;
+    font-size:13px;
+    color:var(--ink-faint);
+  }
+
+  /* ---------- the rail ---------- */
+
+  .topics{
+    list-style:none;
+    margin:0;
+    padding:0;
+    position:relative;
+  }
+
+  .topic{
+    position:relative;
+    padding-left:34px;
+  }
+
+  /* continuous rail segment behind each topic */
+  .topic::before{
+    content:"";
+    position:absolute;
+    left:calc(var(--node) / 2 - 1px);
+    top:0;
+    bottom:0;
+    width:2px;
+    background:var(--rule);
+  }
+  .topic:first-child::before{top:18px}
+  .topic:last-child::before{bottom:auto;height:24px}
+
+  .topic-btn{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:0;
+    border-top:1px solid var(--rule);
+    padding:14px 22px 14px 0;
+    font-family:inherit;
+    color:inherit;
+    cursor:pointer;
+    position:relative;
+  }
+  .topic:first-child .topic-btn{border-top:0;padding-top:8px}
+  .topic-btn:focus-visible{outline:2px solid var(--c);outline-offset:-2px}
+
+  /* node on the rail */
+  .topic-btn::before{
+    content:"";
+    position:absolute;
+    left:-34px;
+    top:17px;
+    width:var(--node);
+    height:var(--node);
+    border-radius:50%;
+    background:var(--page);
+    border:2px solid var(--rule);
+    transition:background-color .18s, border-color .18s;
+  }
+  .topic:first-child .topic-btn::before{top:11px}
+
+  .topic[data-open="true"] .topic-btn::before,
+  .topic-btn:hover::before{
+    background:var(--c);
+    border-color:var(--c);
+  }
+
+  /* chevron */
+  .topic-btn::after{
+    content:"";
+    position:absolute;
+    right:2px;
+    top:20px;
+    width:7px;
+    height:7px;
+    border-right:2px solid var(--ink-faint);
+    border-bottom:2px solid var(--ink-faint);
+    transform:rotate(45deg);
+    transform-origin:center;
+    transition:transform .2s ease, border-color .18s;
+  }
+  .topic:first-child .topic-btn::after{top:14px}
+  .topic[data-open="true"] .topic-btn::after{
+    transform:rotate(-135deg);
+    border-color:var(--c);
+  }
+  .topic-btn:hover::after{border-color:var(--c)}
+
+  .topic-title{
+    display:block;
+    font-family:"Archivo",sans-serif;
+    font-variation-settings:"wdth" 100,"wght" 600;
+    font-size:16px;
+    line-height:1.3;
+    letter-spacing:-0.01em;
+  }
+
+  .topic-sub{
+    display:block;
+    margin-top:3px;
+    font-size:12.5px;
+    color:var(--ink-faint);
+  }
+
+  .shared{
+    display:inline-block;
+    margin-top:6px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    background:var(--wash);
+    border-radius:2px;
+    padding:2px 7px;
+  }
+
+  /* ---------- objectives ---------- */
+
+  .objectives{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows .26s ease;
+  }
+  .topic[data-open="true"] .objectives{grid-template-rows:1fr}
+
+  .objectives-inner{overflow:hidden}
+
+  .objectives ul{
+    list-style:none;
+    margin:0;
+    padding:2px 0 18px;
+  }
+
+  .objectives li{
+    position:relative;
+    padding:6px 0 6px 16px;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+
+  .objectives li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:14px;
+    width:7px;
+    height:2px;
+    background:var(--c);
+  }
+
+  /* ---------- shared module band ---------- */
+
+  .common{
+    --c:var(--ai);
+    --wash:var(--ai-wash);
+    margin-top:64px;
+    border-top:5px solid var(--c);
+    padding-top:14px;
+  }
+
+  .common-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:28px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+
+  .common-head h2{
+    font-family:"Archivo",sans-serif;
+    font-variation-settings:"wdth" 100,"wght" 700;
+    font-size:23px;
+    line-height:1.15;
+    letter-spacing:-0.015em;
+    margin:0;
+    color:var(--c);
+  }
+
+  .common-head p{
+    margin:0;
+    font-size:14px;
+    color:var(--ink-soft);
+    max-width:52ch;
+  }
+
+  .common .topic-btn{padding-right:30px}
+  .common .topic-title{font-size:17px}
+
+  .common .objectives ul{
+    padding-bottom:22px;
+    columns:3;
+    column-gap:48px;
+  }
+
+  .common .objectives li{break-inside:avoid}
+
+  @media (max-width:1000px){
+    .common .objectives ul{columns:1}
+  }
+
+  /* ---------- footer ---------- */
+  .page-footer {
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-faint);
+    max-width: 70ch;
+  }
+
+  .page-footer p { margin: 0 0 6px; }
+  .page-footer p:last-child { margin-bottom: 0; }
+
+  /* ---------- responsive ---------- */
+
+  @media (max-width:1000px){
+    .streams{grid-template-columns:1fr;gap:44px}
+    .wrap{padding:36px 22px 72px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
+  }
+
+  @media print{
+    .toggle-all{display:none}
+    .objectives{grid-template-rows:1fr}
+    .streams{gap:22px}
+    body{font-size:11px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <h1>Graduate training outcomes</h1>
+      <p class="standfirst">Three streams, running in parallel. Each topic lists what grads will be able to do by the end of it. Select a topic to see its outcomes.</p>
+    </div>
+    <button class="toggle-all" id="toggleAll" type="button" aria-pressed="false">Expand all</button>
+  </header>
+
+  <main class="streams" id="streams"></main>
+
+  <section class="common" id="common" aria-labelledby="common-head">
+    <div class="common-head">
+      <h2 id="common-head">AI foundations</h2>
+      <p>All streams converge here after their specialist training.</p>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>Topics run top to bottom in delivery order. Software engineering and technology analyst share the opening two topics, and all three streams finish on the AI foundations module.</p>
+    <p>Last updated for the October 2026 cohort.</p>
+  </footer>
+
+</div>
+
+<script>
+const STREAMS = [
+  {
+    id: "swe",
+    name: "Software engineering",
+    topics: [
+      {
+        title: "Foundations and version control",
+        shared: "Shared with technology analyst",
+        objectives: [
+          "Use Git confidently: repositories, commits and branching",
+          "Set up and troubleshoot a local development environment",
+          "Work to a brief and deliver in iterations"
+        ]
+      },
+      {
+        title: "Data and databases",
+        shared: "Shared with technology analyst",
+        objectives: [
+          "Apply data architecture fundamentals",
+          "Design a relational schema from a set of requirements",
+          "Write SQL: filtering, joins and aggregation",
+          "Translate application requirements into working queries"
+        ]
+      },
+      {
+        title: "APIs and JavaScript fundamentals",
+        objectives: [
+          "Explain how an API works: requests, responses, HTTP methods and status codes",
+          "Read and write an API contract",
+          "Use JavaScript core concepts: variables, functions, control flow, objects and arrays",
+          "Work with JSON to move data between systems"
+        ]
+      },
+      {
+        title: "Back-end development with Node and Express",
+        objectives: [
+          "Stand up a server and define routes in Express",
+          "Handle URL parameters and return JSON responses",
+          "Connect an API to a live database",
+          "Deliver a complete, working API"
+        ]
+      },
+      {
+        title: "Front-end development with React",
+        objectives: [
+          "Build components with JSX, props and composition",
+          "Model state as a single value rather than several booleans",
+          "Fetch data and handle loading and error states",
+          "Turn API errors into guidance a user can act on",
+          "Render lists and handle user interactions",
+          "Test an interface for accessibility"
+        ]
+      }
+    ]
+  },
+  {
+    id: "ta",
+    name: "Technology analyst",
+    topics: [
+      {
+        title: "Foundations and version control",
+        shared: "Shared with software engineering",
+        objectives: [
+          "Use Git confidently: repositories, commits and branching",
+          "Set up and troubleshoot a local development environment",
+          "Work to a brief and deliver in iterations"
+        ]
+      },
+      {
+        title: "Data and databases",
+        shared: "Shared with software engineering",
+        objectives: [
+          "Apply data architecture fundamentals",
+          "Design a relational schema from a set of requirements",
+          "Write SQL: filtering, joins and aggregation",
+          "Translate application requirements into working queries"
+        ]
+      },
+      {
+        title: "Business analysis",
+        objectives: [
+          "Apply functional and business analysis principles",
+          "Elicit and document requirements from stakeholders",
+          "Practise stakeholder conversations through roleplay"
+        ]
+      },
+      {
+        title: "Agile delivery and PSM1",
+        objectives: [
+          "Describe the Scrum framework: roles, events and artefacts",
+          "Cover the PSM1 certification syllabus",
+          "Run Scrum ceremonies through roleplay"
+        ]
+      },
+      {
+        title: "Testing",
+        objectives: [
+          "Apply core test principles and best practice",
+          "Set up and use standard test tooling",
+          "Judge when to test manually and when to automate",
+          "Plan and run a test execution cycle"
+        ]
+      },
+      {
+        title: "DevOps",
+        objectives: [
+          "Explain the principles behind DevOps practice",
+          "Apply version control and a branching strategy",
+          "Containerise an application and follow container best practice",
+          "Build CI/CD pipelines and follow pipeline best practice"
+        ]
+      }
+    ]
+  },
+  {
+    id: "pmo",
+    name: "PMO",
+    topics: [
+      {
+        title: "Project Controls 101",
+        objectives: [
+          "Describe the structure and functions of the Project Controls Service",
+          "Explain the core pillars of the service",
+          "Learn each specialism directly from Community of Practice leads"
+        ]
+      },
+      {
+        title: "Finance 101",
+        objectives: [
+          "Apply the core finance principles used across Accenture",
+          "Use finance fundamentals in a project support role"
+        ]
+      },
+      {
+        title: "Service management",
+        objectives: [
+          "Describe the service management capability within the PCS",
+          "Recognise where it fits alongside the other service functions"
+        ]
+      },
+      {
+        title: "Power Platform hackathon",
+        objectives: [
+          "Understand what the Power Platform is and where it is used",
+          "Build a working tool across Power BI, Power Apps and Power Automate",
+          "Deliver a build to a fixed deadline"
+        ]
+      },
+      {
+        title: "Delivery centre immersion",
+        objectives: [
+          "Meet the teams and understand the projects they will support",
+          "Continue their Power Platform build with hands-on support",
+          "Prepare and deliver a presentation on their work"
+        ]
+      },
+      {
+        title: "Ideation and continuous improvement",
+        objectives: [
+          "Explain how ideation works within the service",
+          "Apply a continuous improvement mindset to day-to-day work"
+        ]
+      },
+      {
+        title: "Copilot hackathon",
+        objectives: [
+          "Understand Copilot's capabilities and limits",
+          "Build and deploy a Copilot agent"
+        ]
+      }
+    ]
+  }
+];
+
+const SHARED = {
+  id: "ai",
+  name: "AI foundations",
+  topics: [
+    {
+      title: "AI and data foundations",
+      objectives: [
+        "Explain core AI and data concepts and how they relate",
+        "Recognise where AI adds value and where it does not",
+        "Navigate the tools used across Accenture engagements"
+      ]
+    },
+    {
+      title: "Generative AI in practice",
+      objectives: [
+        "Understand what GenAI Studio is for and when to reach for it",
+        "Write effective prompts and evaluate the output",
+        "Apply generative AI to a realistic working task"
+      ]
+    },
+    {
+      title: "Agentic and responsible AI",
+      objectives: [
+        "Explain what makes a system agentic and how agents differ from chat tools",
+        "Apply responsible AI principles to design and delivery decisions",
+        "Account for sovereignty, data residency and regulatory constraints"
+      ]
+    },
+    {
+      title: "Applied challenge: debate and presentation",
+      objectives: [
+        "Argue a position on AI adoption and defend it under challenge",
+        "Weigh trade-offs and risks rather than restating capability",
+        "Present findings clearly to an audience"
+      ]
+    },
+    {
+      title: "L1 certification",
+      objectives: [
+        "Complete the Level 1 AI certification pathway"
+      ]
+    }
+  ]
+};
+
+/* ---------- render ---------- */
+
+const root = document.getElementById("streams");
+
+function buildTopicList(topics, prefix, labelledBy) {
+  const list = document.createElement("ul");
+  list.className = "topics";
+  if (labelledBy) list.setAttribute("aria-labelledby", labelledBy);
+
+  topics.forEach((topic, i) => {
+    const panelId = `${prefix}-panel-${i}`;
+    const btnId = `${prefix}-btn-${i}`;
+
+    const li = document.createElement("li");
+    li.className = "topic";
+    li.dataset.open = "false";
+
+    const btn = document.createElement("button");
+    btn.className = "topic-btn";
+    btn.type = "button";
+    btn.id = btnId;
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", panelId);
+
+    const title = document.createElement("span");
+    title.className = "topic-title";
+    title.textContent = topic.title;
+    btn.appendChild(title);
+
+    const sub = document.createElement("span");
+    sub.className = "topic-sub";
+    sub.textContent = topic.objectives.length === 1 ? "1 outcome" : `${topic.objectives.length} outcomes`;
+    btn.appendChild(sub);
+
+    if (topic.shared) {
+      const chip = document.createElement("span");
+      chip.className = "shared";
+      chip.textContent = topic.shared;
+      btn.appendChild(chip);
+    }
+
+    const panel = document.createElement("div");
+    panel.className = "objectives";
+    panel.id = panelId;
+    panel.setAttribute("role", "region");
+    panel.setAttribute("aria-labelledby", btnId);
+
+    const inner = document.createElement("div");
+    inner.className = "objectives-inner";
+    const ul = document.createElement("ul");
+    topic.objectives.forEach(o => {
+      const item = document.createElement("li");
+      item.textContent = o;
+      ul.appendChild(item);
+    });
+    inner.appendChild(ul);
+    panel.appendChild(inner);
+
+    btn.addEventListener("click", () => {
+      const open = li.dataset.open === "true";
+      li.dataset.open = String(!open);
+      btn.setAttribute("aria-expanded", String(!open));
+      syncToggleLabel();
+    });
+
+    li.append(btn, panel);
+    list.appendChild(li);
+  });
+
+  return list;
+}
+
+STREAMS.forEach(stream => {
+  const section = document.createElement("section");
+  section.className = "stream";
+  section.dataset.stream = stream.id;
+
+  const head = document.createElement("div");
+  head.className = "stream-head";
+  const h2 = document.createElement("h2");
+  h2.textContent = stream.name;
+  h2.id = `head-${stream.id}`;
+  const meta = document.createElement("p");
+  meta.className = "stream-meta";
+  const objCount = stream.topics.reduce((n, t) => n + t.objectives.length, 0);
+  meta.textContent = `${stream.topics.length} topics, ${objCount} outcomes in total`;
+  head.append(h2, meta);
+
+  section.append(head, buildTopicList(stream.topics, stream.id, h2.id));
+  root.appendChild(section);
+});
+
+document.getElementById("common").appendChild(
+  buildTopicList(SHARED.topics, SHARED.id, "common-head")
+);
+
+/* ---------- expand all ---------- */
+
+const toggleAll = document.getElementById("toggleAll");
+
+function setAll(open) {
+  document.querySelectorAll(".topic").forEach(li => {
+    li.dataset.open = String(open);
+    li.querySelector(".topic-btn").setAttribute("aria-expanded", String(open));
+  });
+  syncToggleLabel();
+}
+
+function syncToggleLabel() {
+  const topics = [...document.querySelectorAll(".topic")];
+  const allOpen = topics.every(li => li.dataset.open === "true");
+  toggleAll.textContent = allOpen ? "Collapse all" : "Expand all";
+  toggleAll.setAttribute("aria-pressed", String(allOpen));
+}
+
+toggleAll.addEventListener("click", () => {
+  const topics = [...document.querySelectorAll(".topic")];
+  setAll(!topics.every(li => li.dataset.open === "true"));
+});
+
+window.addEventListener("beforeprint", () => setAll(true));
+</script>
+</body>
+</html>
