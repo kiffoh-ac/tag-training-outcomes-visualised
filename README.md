@@ -1,4 +1,6 @@
 # tag-training-outcomes-visualised
+[Click here](https://kiffoh-ac.github.io/tag-training-outcomes-visualised/) to open the page and view the training outcomes.
+
 ## Graduate training outcomes
 
 `training-outcomes.html` is a single, self-contained page showing what new
