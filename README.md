@@ -3,7 +3,7 @@
 
 ## Graduate training outcomes
 
-`training-outcomes.html` is a single, self-contained page showing what new
+`index.html` is a single, self-contained page showing what new
 graduates will be able to do at the end of each training stream.
 
 The three streams — software engineering, technology analyst and PMO — sit
