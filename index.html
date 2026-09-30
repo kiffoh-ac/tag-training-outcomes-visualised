@@ -237,6 +237,41 @@
     padding:2px 7px;
   }
 
+  /* ---------- technologies ---------- */
+
+  .tech{
+    margin-top:22px;
+    padding-top:14px;
+    border-top:1px solid var(--rule);
+  }
+
+  .tech h3{
+    font-family:"Archivo",sans-serif;
+    font-variation-settings:"wdth" 100,"wght" 600;
+    font-size:13px;
+    letter-spacing:0.01em;
+    margin:0 0 10px;
+    color:var(--c);
+  }
+
+  .tech ul{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+
+  .tech li{
+    font-size:12.5px;
+    line-height:1.4;
+    color:var(--c);
+    background:var(--wash);
+    border-radius:2px;
+    padding:4px 9px;
+  }
+
   /* ---------- objectives ---------- */
 
   .objectives{
@@ -324,17 +359,18 @@
   }
 
   /* ---------- footer ---------- */
-  .page-footer {
-    margin-top: 56px;
-    padding-top: 18px;
-    border-top: 1px solid var(--rule);
-    font-size: 13px;
-    color: var(--ink-faint);
-    max-width: 70ch;
+
+  .page-footer{
+    margin-top:56px;
+    padding-top:18px;
+    border-top:1px solid var(--rule);
+    font-size:13px;
+    color:var(--ink-faint);
+    max-width:70ch;
   }
 
-  .page-footer p { margin: 0 0 6px; }
-  .page-footer p:last-child { margin-bottom: 0; }
+  .page-footer p{margin:0 0 6px}
+  .page-footer p:last-child{margin-bottom:0}
 
   /* ---------- responsive ---------- */
 
@@ -387,6 +423,7 @@ const STREAMS = [
   {
     id: "swe",
     name: "Software engineering",
+    technologies: ["Git", "GitHub", "GitHub Codespaces", "SQL", "PostgreSQL", "JavaScript", "JSON", "Node.js", "Express", "React"],
     topics: [
       {
         title: "Foundations and version control",
@@ -441,6 +478,7 @@ const STREAMS = [
   {
     id: "ta",
     name: "Technology analyst",
+    technologies: ["Git", "GitHub", "GitHub Codespaces", "SQL", "PostgreSQL", "Docker", "GitHub Actions"],
     topics: [
       {
         title: "Foundations and version control",
@@ -500,6 +538,7 @@ const STREAMS = [
   {
     id: "pmo",
     name: "PMO",
+    technologies: ["MMS", "MMP", "MME", "myScheduling", "SharePoint", "Excel", "Power Platform", "Power BI", "Power Apps", "Power Automate", "Microsoft Copilot"],
     topics: [
       {
         title: "Project Controls 101",
@@ -691,6 +730,27 @@ STREAMS.forEach(stream => {
   head.append(h2, meta);
 
   section.append(head, buildTopicList(stream.topics, stream.id, h2.id));
+
+  if (stream.technologies && stream.technologies.length) {
+    const tech = document.createElement("div");
+    tech.className = "tech";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = "Technologies";
+    h3.id = `tech-${stream.id}`;
+
+    const ul = document.createElement("ul");
+    ul.setAttribute("aria-labelledby", h3.id);
+    stream.technologies.forEach(t => {
+      const li = document.createElement("li");
+      li.textContent = t;
+      ul.appendChild(li);
+    });
+
+    tech.append(h3, ul);
+    section.appendChild(tech);
+  }
+
   root.appendChild(section);
 });
 
